@@ -1,0 +1,6 @@
+@MoviesSemanticSearch.Api_HostAddress = http://localhost:5296
+
+GET {{MoviesSemanticSearch.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
