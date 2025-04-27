@@ -7,17 +7,14 @@ var ollama = builder.AddOllama("ollama").WithGPUSupport()
 
 var embedModel = ollama.AddHuggingFaceModel("embed-model", "limcheekin/snowflake-arctic-embed-l-v2.0-GGUF");
 
-var milvus = builder.AddMilvus("milvus")
-    .WithAttu()
+var elasticsearch = builder.AddElasticsearch("elasticsearch")
     .WithLifetime(ContainerLifetime.Persistent);
-
-var milvusdb = milvus.AddDatabase("milvusdb");
 
 builder.AddProject<Projects.MoviesSemanticSearch_Api>("moviessemanticsearch-api")
     .WithScalar()
     .WithReference(embedModel)
     .WaitFor(embedModel)
-    .WithReference(milvusdb)
-    .WaitFor(milvusdb);
+    .WithReference(elasticsearch)
+    .WaitFor(elasticsearch);
 
 builder.Build().Run();

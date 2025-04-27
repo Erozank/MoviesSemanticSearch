@@ -1,4 +1,5 @@
-﻿using MoviesSemanticSearch.Api.Models;
+﻿using MoviesSemanticSearch.Api.Entities;
+using MoviesSemanticSearch.Api.Models;
 
 namespace MoviesSemanticSearch.Api.Services
 {

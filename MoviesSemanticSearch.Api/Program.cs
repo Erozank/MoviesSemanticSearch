@@ -12,12 +12,12 @@ builder.AddServiceDefaults();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.AddMilvusClient("milvusdb");
-
 builder.AddOllamaApiClient("embed-model").AddEmbeddingGenerator();
 
+builder.AddElasticsearchClient(connectionName: "elasticsearch");
+
 builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IMilvusService, MilvusService>();
+builder.Services.AddScoped<IElasticService, ElasticService>();
 
 var app = builder.Build();
 
