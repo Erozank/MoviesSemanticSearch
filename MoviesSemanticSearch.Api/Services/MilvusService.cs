@@ -16,7 +16,7 @@ namespace MoviesSemanticSearch.Api.Services
             _logger = logger;
         }
 
-        public async Task InsertarMoviesAsync(List<MovieEntity> movies)
+        public async Task InsertMoviesAsync(List<MovieEntity> movies)
         {
             // Check if this collection exists
             var hasCollection = await _client.HasCollectionAsync(_collectionName);
@@ -54,7 +54,7 @@ namespace MoviesSemanticSearch.Api.Services
                 FieldSchema.Create<long>("id", isPrimaryKey: true, autoId: true),
                 FieldSchema.CreateVarchar("title", 256),
                 FieldSchema.CreateVarchar("image_url", 1024),
-                FieldSchema.Create<int>("released_year"),
+                FieldSchema.CreateVarchar("released_year", 64),
                 FieldSchema.CreateVarchar("overview", 2048),
                 FieldSchema.CreateFloatVector("embeddings", 1024)
             ];

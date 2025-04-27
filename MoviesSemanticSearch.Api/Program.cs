@@ -1,5 +1,8 @@
+using CsvHelper;
+using MoviesSemanticSearch.Api.Models;
 using MoviesSemanticSearch.Api.Services;
 using Scalar.AspNetCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +14,10 @@ builder.Services.AddOpenApi();
 
 builder.AddMilvusClient("milvusdb");
 
-builder.AddOllamaSharpEmbeddingGenerator("embed-model");
+builder.AddOllamaApiClient("embed-model").AddEmbeddingGenerator();
 
-builder.Services.AddSingleton<IMovieService, MovieService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IMilvusService, MilvusService>();
 
 var app = builder.Build();
 
@@ -29,12 +33,41 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/movies", async (IMovieService movieService, string? term = null, int limit = 10) =>
+app.MapGet("/movies", async (IMovieService movieService, string term, int limit = 10) =>
 {
-    await movieService.GetMoviesAsync(term, limit);
+    var movies = await movieService.GetMoviesAsync(term, limit);
 
-    return Results.Ok();
+    return Results.Ok(movies);
 });
+
+app.MapPost("/upload-movies", async (IMovieService movieService, IFormFile file) =>
+{
+    if (file == null || file.Length == 0)
+    {
+        return Results.BadRequest("No se ha seleccionado ningún archivo o el archivo está vacío.");
+    }
+
+    var movies = new List<Movie>();
+
+    try
+    {
+        using var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            movies = csv.GetRecords<Movie>().ToList();
+        }
+
+        await movieService.InsertarMoviesAsync(movies);
+
+        return Results.Ok();
+    }
+    catch (Exception ex)
+    {
+        return Results.InternalServerError("Error processing the file: " + ex.Message);
+    }
+}).DisableAntiforgery();
 
 app.Run();
 

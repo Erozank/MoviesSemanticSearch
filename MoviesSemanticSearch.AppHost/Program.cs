@@ -5,7 +5,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var ollama = builder.AddOllama("ollama").WithGPUSupport()
     .WithLifetime(ContainerLifetime.Persistent);
 
-var embedModel = ollama.AddModel("embed-model", "mxbai-embed-large");
+var embedModel = ollama.AddHuggingFaceModel("embed-model", "limcheekin/snowflake-arctic-embed-l-v2.0-GGUF");
 
 var milvus = builder.AddMilvus("milvus")
     .WithAttu()

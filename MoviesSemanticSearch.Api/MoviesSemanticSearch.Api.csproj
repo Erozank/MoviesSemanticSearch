@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Milvus.Client" Version="9.2.1-preview.1.25222.1" />
-    <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.1.0" />
+    <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.4.1-beta.277" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.2.1" />
   </ItemGroup>
