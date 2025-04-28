@@ -19,7 +19,18 @@ builder.AddElasticsearchClient(connectionName: "elasticsearch");
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IElasticService, ElasticService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy => policy
+              .AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowReactApp");
 
 app.MapDefaultEndpoints();
 
@@ -33,9 +44,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/movies", async (IMovieService movieService, string term, int limit = 10) =>
+app.MapGet("/movies", async (IMovieService movieService, string query, int limit = 10) =>
 {
-    var movies = await movieService.GetMoviesAsync(term, limit);
+    var movies = await movieService.GetMoviesAsync(query, limit);
 
     return Results.Ok(movies);
 });
